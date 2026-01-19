@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVXPY Column Bug Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a4d7a;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #1a4d7a;
+            border-radius: 5px;
+        }
+        .demo-section h3 {
+            color: #1a4d7a;
+            margin-top: 0;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .keyword { color: #ff79c6; }
+        .function { color: #50fa7b; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        button {
+            background: #1a4d7a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2c6ba8;
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .output {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            min-height: 60px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            border-color: #d32f2f;
+        }
+        .success {
+            color: #2e7d32;
+            background: #e8f5e9;
+            border-color: #2e7d32;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+        }
+        .shapes {
+            display: inline-block;
+            background: #e3f2fd;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CVXPY Bug Demo</h1>
+        
+        <div class="demo-section">
+            <h3>🐛 The Bug: Column Vector Constraint Mismatch</h3>
+            <p>Here is a simple optimization problem with a subtle shape mismatch:</p>
+            <pre><code><span class="keyword">import</span> cvxpy <span class="keyword">as</span> cp
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+
+<span class="comment"># Problem: minimize sum(X)</span>
+
+X = cp.<span class="function">Variable</span>(<span class="string">3</span>)  <span class="comment"># Shape: (3,)</span>
+
+<span class="comment"># Correct: 1D array</span>
+target_correct = np.<span class="function">array</span>([<span class="string">1</span>, <span class="string">2</span>, <span class="string">3</span>])  <span class="comment"># Shape: (3,)</span>
+
+<span class="comment"># BUG: Column vector</span>
+target_wrong = np.<span class="function">array</span>([[<span class="string">1</span>], [<span class="string">2</span>], [<span class="string">3</span>]])  <span class="comment"># Shape: (3, 1)</span>
+
+<span class="comment"># When you use target_wrong in expressions:</span>
+<span class="comment"># X is (3,) but target_wrong is (3, 1)</span>
+<span class="comment"># This causes broadcasting issues!</span>
+
+objective = cp.<span class="function">Minimize</span>(cp.<span class="function">sum</span>(X))
+constraint = [X == target_wrong]  <span class="comment"># Shape mismatch!</span>
+prob = cp.<span class="function">Problem</span>(objective, constraint)
+prob.<span class="function">solve</span>()</code></pre>
+            
+            <button onclick="runBuggyCode()">Run Buggy Code</button>
+            <button onclick="runCorrectCode()">Run Correct Code</button>
+            <button onclick="showShapes()">Show Shapes</button>
+            
+            <div id="output" class="output">Click a button to run the demo...</div>
+        </div>
+        
+        <div class="explanation">
+            <h3>What's Happening?</h3>
+            <p><strong>The Problem:</strong> X has shape <span class="shapes">(3,)</span> but the constraint uses a <span class="shapes">(3,1)</span> column vector. Broadcasting creates a <span class="shapes">(3,3)</span> matrix constraint instead of element-wise equality!</p>
+            <p><strong>The Fix:</strong> Use <code>target.flatten()</code> or <code>target.reshape(-1)</code> to convert <span class="shapes">(3,1)</span> to <span class="shapes">(3,)</span>, or define target as <code>np.array([1, 2, 3])</code> directly.</p>
+            <p><strong>Best Practice:</strong> Always verify shapes match: <code>print(f"X shape: {X.shape}, target shape: {target.shape}")</code></p>
+        </div>
+    </div>
+    
+    <script>
+        function runBuggyCode() {
+            const output = document.getElementById('output');
+            output.className = 'output error';
+            output.innerHTML = `<strong>Using target_wrong with shape (3, 1)</strong>
+
+Problem setup:
+  X shape: (3,)
+  target_wrong shape: (3, 1)
+  
+Creating constraint (X == target_wrong):
+  Broadcasting (3,) == (3, 1)
+  Result shape: (3, 3)  ← Creates a 3×3 matrix constraint!
+  
+The constraint becomes:
+  [[X[0] == 1, X[0] == 2, X[0] == 3],
+   [X[1] == 1, X[1] == 2, X[1] == 3],
+   [X[2] == 1, X[2] == 2, X[2] == 3]]
+   
+<strong>Error: Incompatible dimensions</strong>
+The problem has 3 variables but 9 equality constraints!
+This leads to:
+  • Infeasibility (overconstrained system)
+  • Solver errors
+  • Unexpected behavior`;
+        }
+        
+        function runCorrectCode() {
+            const output = document.getElementById('output');
+            output.className = 'output success';
+            output.innerHTML = `<strong>Using target_correct with shape (3,)</strong>
+
+Problem setup:
+  X shape: (3,)
+  target_correct shape: (3,) # Shapes match!
+  
+Creating constraint (X == target_correct):
+  (3,) == (3,)
+  Result: 3 element-wise equality constraints  
+  
+The constraint is:
+  [X[0] == 1, X[1] == 2, X[2] == 3]
+  
+Objective: minimize sum(X) = X[0] + X[1] + X[2]
+
+Solving...
+
+<strong>Status: optimal</strong>
+
+Optimal value: 6.0
+Optimal X: [1.0, 2.0, 3.0]
+
+Problem solved correctly!`;
+        }
+        
+        function showShapes() {
+            const output = document.getElementById('output');
+            output.className = 'output';
+            output.innerHTML = `<strong>Understanding Array Shapes in CVXPY</strong>
+
+Common shapes and their meanings:
+  (n,)      → Vector (1-D array) of length n
+  (n, 1)    → Column vector (2-D array) with n rows
+  (1, n)    → Row vector (2-D array) with n columns
+  (m, n)    → Matrix with m rows and n columns
+
+Constraint broadcasting examples:
+  (3,) == (3,)     → 3 scalar constraints  
+  (3,) == (3, 1)   → (3, 3) matrix constraint  
+  (3, 1) == (3, 1) → 3 scalar constraints  
+  (3,) == scalar   → 3 identical constraints  
+
+<strong>How to fix shape mismatches:</strong>
+  • target.flatten()      → (3, 1) to (3,)
+  • target.reshape(-1)    → (3, 1) to (3,)
+  • np.array([1, 2, 3])   → Creates (3,) directly
+  • target.squeeze()      → Remove single dimensions
+
+<strong>Key Takeaway:</strong>
+Always check: print(f"Shape: {your_expression.shape}")
+Before adding constraints, ensure dimensions match!`;
+        }
+    </script>
+</body>
+</html>
