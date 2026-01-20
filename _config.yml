@@ -359,3 +359,7 @@ compress_html:
   clippings: all
   ignore:
     envs: development
+
+# GitHub Pages settings
+url: "https://breaswartwood.github.io"
+baseurl: ""
