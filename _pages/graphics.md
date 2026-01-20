@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "Graphics"
+title: "Random"
 permalink: /graphics/
 author_profile: true
 ---
