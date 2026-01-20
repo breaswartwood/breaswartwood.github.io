@@ -1,0 +1,29 @@
+# Personal ranking of Caltech classes based on vibes, usefulness, and entertainment.
+# Please take this with a grain of salt!
+
+- code: "ACM 104"
+  title: "Applied Linear Algebra"
+  tier: "A"
+  notes: "solid class for basic understanding!"
+
+- code: "ACM 116"
+  title: "Introduction to Probability Models"
+  tier: "A"
+  notes: "solid class for basic understanding"
+
+- code: "ACM 216"
+  title: "Markov Chains, Discrete Stochastic Processes and Applications"
+  tier: "S"
+  notes: "very entertaining"
+
+- code: "PE 087"
+  title: "Intercollegiate Swimming and Diving Teams"
+  tier: "S"
+  display_tier: "S+"
+  notes: "under-united by a long shot"
+
+- code: "ACM011"
+  title: "Introduction to Computational Science and Engineering"
+  tier: "S"
+  display_tier: "S+"
+  notes: "pulled me into applied math forever"
