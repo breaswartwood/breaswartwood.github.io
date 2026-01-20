@@ -1,0 +1,10 @@
+/* --- Custom overrides --- */
+
+/* Make sidebar author avatar circular and cropped nicely */
+.author__avatar img {
+  width: 180px;          /* adjust size if you want */
+  height: 180px;         /* keep equal to width for a perfect circle */
+  object-fit: cover;     /* crops like a profile photo */
+  border-radius: 50%;
+  display: block;
+}
