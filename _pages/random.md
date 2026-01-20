@@ -70,7 +70,8 @@ author_profile: true
   .t-b   .tier-head { background: rgba(255, 110, 110, 0.16); }
 </style>
 
-### Course Tier Board <span class="sparkle">☕️📚</span>
+### Caltech Courses <span class="sparkle">📚</span>
+My personal ranking of Caltech classes based on the metrics of **vibes**, **usefulness**, and **entertainment**. Please take this with a grain of salt!
 
 {% assign tiers = "S++,S+,S,A,B" | split: "," %}
 
