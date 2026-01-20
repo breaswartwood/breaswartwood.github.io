@@ -7,12 +7,7 @@ main:
     url: /talks/
   - title: "Teaching"
     url: /teaching/
-  - title: "Coffee"
-  - title: "CV"
-    url: /cv/
-
   - title: "Random"
     url: /random/
-
   - title: "Teaching Profile"
     url: /teaching-profile/

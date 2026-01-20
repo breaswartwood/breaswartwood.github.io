@@ -18,4 +18,4 @@ I have taught a variety of levels, including middle school students, high school
 - **CS 19: Introduction to Computer Science in Industry**
 
 ## Teaching feedback
-Teaching evaluations and feedback (Caltech) consistently emphasized clarity, helpfulness, and preparedness.
+Teaching evaluations and feedback (Caltech) consistently emphasize clarity, helpfulness, and preparedness.
