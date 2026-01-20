@@ -4,23 +4,15 @@
   const searchEl = document.getElementById("tierlist-search");
   const sortEl = document.getElementById("tierlist-sort");
   const tierBtns = Array.from(document.querySelectorAll(".tier-btn"));
-
   if (!dataEl || !gridEl) return;
 
   const tierOrder = { S: 0, A: 1, B: 2, C: 3 };
   let all = [];
-
-  try {
-    all = JSON.parse(dataEl.textContent || "[]");
-  } catch (e) {
-    all = [];
-  }
+  try { all = JSON.parse(dataEl.textContent || "[]"); } catch (e) { all = []; }
 
   let state = { tier: "ALL", q: "", sort: "tier" };
 
-  function normalize(s) {
-    return (s || "").toLowerCase().trim();
-  }
+  function normalize(s) { return (s || "").toLowerCase().trim(); }
 
   function compare(a, b) {
     if (state.sort === "tier") {
@@ -31,6 +23,12 @@
     }
     if (state.sort === "code") return normalize(a.code).localeCompare(normalize(b.code));
     return normalize(a.title).localeCompare(normalize(b.title));
+  }
+
+  function escapeHtml(s) {
+    return (s ?? "").toString().replace(/[&<>"']/g, (m) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    }[m]));
   }
 
   function filtered() {
@@ -51,16 +49,6 @@
       .sort(compare);
   }
 
-  function escapeHtml(s) {
-    return (s ?? "").toString().replace(/[&<>"']/g, (m) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    }[m]));
-  }
-
   function card(x) {
     const badge = x.display_tier || x.tier;
     const notes = x.notes ? `<div class="tierlist-notes">${escapeHtml(x.notes)}</div>` : "";
@@ -78,9 +66,7 @@
 
   function render() {
     const items = filtered();
-    gridEl.innerHTML = items.length
-      ? items.map(card).join("")
-      : `<div class="tierlist-empty">No matches.</div>`;
+    gridEl.innerHTML = items.length ? items.map(card).join("") : `<div class="tierlist-empty">No matches.</div>`;
   }
 
   tierBtns.forEach((btn) => {
@@ -92,15 +78,8 @@
     });
   });
 
-  searchEl?.addEventListener("input", (e) => {
-    state.q = e.target.value || "";
-    render();
-  });
-
-  sortEl?.addEventListener("change", (e) => {
-    state.sort = e.target.value || "tier";
-    render();
-  });
+  searchEl?.addEventListener("input", (e) => { state.q = e.target.value || ""; render(); });
+  sortEl?.addEventListener("change", (e) => { state.sort = e.target.value || "tier"; render(); });
 
   render();
 })();
