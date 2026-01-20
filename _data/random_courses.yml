@@ -1,0 +1,49 @@
+- code: "Hum/Pl 041"
+  title: "Knowledge and Reality"
+  tier: "S+"
+  notes: "actually fun hum"
+
+- code: "ACM/EE 106A/B"
+  title: "Introductory Methods of Computational Mathematics"
+  tier: "S"
+  notes: "more cool stuff I use currently"
+
+- code: "ACM/IDS 101A/B"
+  title: "Methods of Applied Mathematics"
+  tier: "A"
+  notes: "broke my brain a little"
+
+- code: "ME 008"
+  title: "Introduction to Robotics"
+  tier: "B"
+  notes: "some cool spline stuff"
+
+- code: "BEM/Ec 120"
+  title: "Introduction to Sports Science"
+  tier: "A"
+  notes: "really cool presenters"
+
+- code: "ACM 157/158"
+  title: "Statistical Inference / Fundamentals of Statistical Learning"
+  tier: "B"
+  notes: "probability + data = difficult for me"
+
+- code: "IDS 166"
+  title: "Computational Cameras"
+  tier: "S+"
+  notes: "so interesting"
+
+- code: "Ma 108A/B"
+  title: "Classical Analysis"
+  tier: "A"
+  notes: "cool postdocs"
+
+- code: "ACM095A/B"
+  title: "Introductory Methods of Applied Mathematics for the Physical Sciences"
+  tier: "A"
+  notes: "I like the content"
+
+- code: "SA 016C"
+  title: "Cooking Basics"
+  tier: "S++"
+  notes: "I still don't know how to cook though"
