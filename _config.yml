@@ -14,7 +14,7 @@ author:
   avatar           : "avatar.jpg"
   name             : "Brea Swartwood"
   pronouns         : "she/her"
-  bio: 'PhD student in ICME at Stanford<br>Applied math + scientific computing for flow/energy systems'
+  bio:             :"PhD student in ICME at Stanford"
   location         : "Stanford, CA"
   employer         : "Stanford University"
   #uri              : "https://breaswartwood.github.io"
