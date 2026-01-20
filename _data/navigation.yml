@@ -11,3 +11,6 @@ main:
     url: /coffee/
   - title: "CV"
     url: /cv/
+
+  - title: "Random"
+    url: /random/
