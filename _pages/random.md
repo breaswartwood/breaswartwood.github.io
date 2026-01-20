@@ -5,45 +5,114 @@ permalink: /random/
 author_profile: true
 ---
 
-### Course Tier List
-
 <style>
-  .tier-table { width: 100%; border-collapse: collapse; }
-  .tier-table th, .tier-table td { padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.08); vertical-align: top; }
-  .tier-table th { text-align: left; font-weight: 700; }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 0.9em; }
-  .badge-spp { background: rgba(90, 60, 200, 0.12); }
-  .badge-sp  { background: rgba(60, 120, 200, 0.12); }
-  .badge-s   { background: rgba(60, 160, 120, 0.12); }
-  .badge-a   { background: rgba(220, 160, 60, 0.14); }
-  .badge-b   { background: rgba(220, 80, 80, 0.12); }
-  .muted { opacity: 0.85; }
+  .tier-board { display: flex; flex-direction: column; gap: 18px; margin-top: 8px; }
+  .tier-section {
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  }
+  .tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 14px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+  .tier-sub { font-weight: 600; opacity: 0.8; font-size: 0.95em; }
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px;
+    padding: 12px 14px 14px;
+    background: rgba(0,0,0,0.02);
+  }
+  .course-card {
+    grid-column: span 12;
+    border-radius: 16px;
+    padding: 12px 12px 10px;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+  .course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  }
+  .course-top { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .code-pill {
+    font-weight: 800;
+    font-size: 0.95em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.03);
+  }
+  .course-title { font-weight: 800; font-size: 1.05em; }
+  .course-notes { margin-top: 6px; opacity: 0.9; }
+  .sparkle { opacity: 0.9; }
+
+  /* Responsive */
+  @media (min-width: 700px) {
+    .course-card { grid-column: span 6; }
+  }
+  @media (min-width: 1020px) {
+    .course-card { grid-column: span 4; }
+  }
+
+  /* Tier colors */
+  .t-spp .tier-head { background: rgba(135, 90, 255, 0.14); }
+  .t-sp  .tier-head { background: rgba(70, 140, 255, 0.14); }
+  .t-s   .tier-head { background: rgba(70, 200, 150, 0.14); }
+  .t-a   .tier-head { background: rgba(255, 185, 70, 0.18); }
+  .t-b   .tier-head { background: rgba(255, 110, 110, 0.16); }
 </style>
 
-<table class="tier-table">
-  <thead>
-    <tr>
-      <th style="width: 22%;">Code</th>
-      <th style="width: 48%;">Title</th>
-      <th style="width: 10%;">Tier</th>
-      <th style="width: 20%;">Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for c in site.data.random_courses %}
-      {% assign badge_class = "badge" %}
-      {% if c.tier == "S++" %}{% assign badge_class = badge_class | append: " badge-spp" %}{% endif %}
-      {% if c.tier == "S+"  %}{% assign badge_class = badge_class | append: " badge-sp"  %}{% endif %}
-      {% if c.tier == "S"   %}{% assign badge_class = badge_class | append: " badge-s"   %}{% endif %}
-      {% if c.tier == "A"   %}{% assign badge_class = badge_class | append: " badge-a"   %}{% endif %}
-      {% if c.tier == "B"   %}{% assign badge_class = badge_class | append: " badge-b"   %}{% endif %}
+### Course Tier Board <span class="sparkle">☕️📚</span>
 
-      <tr>
-        <td><strong>{{ c.code }}</strong></td>
-        <td>{{ c.title }}</td>
-        <td><span class="{{ badge_class }}">{{ c.tier }}</span></td>
-        <td class="muted">{{ c.notes }}</td>
-      </tr>
+{% assign tiers = "S++,S+,S,A,B" | split: "," %}
+
+<div class="tier-board">
+  {% for t in tiers %}
+    {% assign klass = "" %}
+    {% if t == "S++" %}{% assign klass = "t-spp" %}{% endif %}
+    {% if t == "S+"  %}{% assign klass = "t-sp"  %}{% endif %}
+    {% if t == "S"   %}{% assign klass = "t-s"   %}{% endif %}
+    {% if t == "A"   %}{% assign klass = "t-a"   %}{% endif %}
+    {% if t == "B"   %}{% assign klass = "t-b"   %}{% endif %}
+
+    {% assign count = 0 %}
+    {% for c in site.data.random_courses %}
+      {% if c.tier == t %}
+        {% assign count = count | plus: 1 %}
+      {% endif %}
     {% endfor %}
-  </tbody>
-</table>
+
+    {% if count > 0 %}
+    <section class="tier-section {{ klass }}">
+      <div class="tier-head">
+        <div>Tier {{ t }}</div>
+        <div class="tier-sub">{{ count }} class{% if count != 1 %}es{% endif %}</div>
+      </div>
+
+      <div class="tier-grid">
+        {% for c in site.data.random_courses %}
+          {% if c.tier == t %}
+            <div class="course-card">
+              <div class="course-top">
+                <span class="code-pill">{{ c.code }}</span>
+                <span class="course-title">{{ c.title }}</span>
+              </div>
+              {% if c.notes %}
+                <div class="course-notes">{{ c.notes }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  {% endfor %}
+</div>
