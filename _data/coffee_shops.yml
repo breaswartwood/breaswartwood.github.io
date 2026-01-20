@@ -1,0 +1,20 @@
+- name: "Verve Coffee Roasters (Palo Alto)"
+  lat: 37.4449
+  lon: -122.1613
+  rating: 4.5
+  notes: "Great espresso; can be busy."
+  url: ""
+
+- name: "Blue Bottle Coffee (Palo Alto)"
+  lat: 37.4436
+  lon: -122.1619
+  rating: 4.0
+  notes: "Solid drip; minimalist vibe."
+  url: ""
+
+- name: "Coupa Café (Palo Alto)"
+  lat: 37.4460
+  lon: -122.1618
+  rating: 4.2
+  notes: "Study-friendly; good snacks."
+  url: ""
