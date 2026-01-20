@@ -8,7 +8,7 @@ redirect_from:
   - /about.html
 ---
 
-Hi! I’m **Brea Swartwood** (she/her), a PhD student in **Computational and Mathematical Engineering (ICME) at Stanford University**. I use **mathematics**, **high performance computing**, and **physics-based modeling** to study problems in energy and flow simulation.
+Hi! I’m **Brea Swartwood** (she/her), a PhD student in the **Institute of Computational and Mathematical Engineering (ICME) at Stanford University**. I use **mathematics**, **high performance computing**, and **physics-based modeling** to study problems in energy and flow simulation.
 
 ## Research interests
 - Numerical methods for multiphase flow
