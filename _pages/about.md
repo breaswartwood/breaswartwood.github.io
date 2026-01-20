@@ -20,3 +20,4 @@ Hi! I’m **Brea Swartwood** (she/her), a PhD student in **Computational and Mat
 - **Talk:** AMS 2025 Fall Central Sectional Meeting — Special Session: Dynamical Systems (Oct 2025)
 
 ## Contact
+Email: brea7[at]stanford.edu
