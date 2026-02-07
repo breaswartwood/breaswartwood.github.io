@@ -1,54 +1,31 @@
-- code: "Hum/Pl 041"
-  title: "Knowledge and Reality"
-  tier: "S+"
-  notes: "actually fun hum"
+---
+<style>
+  /* Make the author/profile avatar bigger */
+  .author__avatar img {
+    max-width: 180px !important;
+    width: 180px !important;
+    height: auto !important;
+  }
+</style>
 
-- code: "ACM/EE 106A/B"
-  title: "Introductory Methods of Computational Mathematics"
-  tier: "S"
-  notes: "more cool stuff I use currently"
+## Interesting Interpretations
 
-- code: "ACM/IDS 101A/B"
-  title: "Methods of Applied Mathematics"
-  tier: "A"
-  notes: "broke my brain a little"
+A running list of things I’ve found surprisingly useful or clarifying—mostly from math/CS/energy, sometimes from everyday life.
 
-- code: "ME 008"
-  title: "Introduction to Robotics"
-  tier: "B"
-  notes: "some cool spline stuff"
+### 1) Stability is a *budget*
+When a scheme has a stability condition (e.g., CFL), I try to think of it like a budget you spend locally: a few “expensive” cells/faces (tiny cells, large wave speeds) can blow up the whole timestep. This mindset makes local time stepping and adaptivity feel more intuitive.
 
-- code: "BEM/Ec 120"
-  title: "Introduction to Sports Science"
-  tier: "A"
-  notes: "really cool presenters"
+### 2) Conservation is a contract at interfaces
+If two neighboring control volumes disagree about the interface flux, something is off. Framing conservation as an interface contract helps me debug discretizations and keep track of what must match exactly.
 
-- code: "ACM 157/158"
-  title: "Statistical Inference / Fundamentals of Statistical Learning"
-  tier: "B"
-  notes: "probability + data = difficult for me"
+### 3) Monotonicity is a geometry constraint
+Maximum principles / positivity often come down to whether the update is a convex combination of nearby states (plus sources). When I can rewrite an update into “weights that sum to 1 and are nonnegative,” the rest of the proof becomes much cleaner.
 
-- code: "IDS 166"
-  title: "Computational Cameras"
-  tier: "S+"
-  notes: "so interesting"
+### 4) Algorithms have a *story*
+I like writing a one-paragraph narrative for an algorithm before implementing it:
+*What are we holding fixed? What are we updating? What must remain invariant?*  It’s a small step that reduces mistakes a lot.
 
-- code: "Ma 108A/B"
-  title: "Classical Analysis"
-  tier: "A"
-  notes: "cool postdocs"
+### 5) Units are a debugging tool
+If I’m stuck, I do a fast dimensional check. It’s amazing how often a missing factor or inconsistent normalization reveals itself immediately.
 
-- code: "ACM095A/B"
-  title: "Introductory Methods of Applied Mathematics for the Physical Sciences"
-  tier: "A"
-  notes: "I like the content"
-
-- code: "SA 016C"
-  title: "Cooking Basics"
-  tier: "S++"
-  notes: "I still don't know how to cook though"
-
-- code: "PE 087ABC"
-  title: "Intercollegiate Swimming and Diving Teams"
-  tier: "S++"
-  notes: "severely under-united"
+If you have a paper, lecture, or concept you think I’d like, send it my way—this list is always evolving.
