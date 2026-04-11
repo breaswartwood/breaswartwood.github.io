@@ -1,0 +1,478 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{bm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem*{remark}{Remark}
+
+\title{Quick Outline of the Fully Explicit Splitting Error Proof}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note compresses the full argument into one short chain: pressure perturbation $\Rightarrow$ flux
+perturbation $\Rightarrow$ transport sensitivity to flux $\Rightarrow$ one-step sequential-versus-fully-implicit bound $\Rightarrow$
+global accumulation.  It also records the sharper complementary-energy and face-local transport
+estimators.
+\end{abstract}
+
+%% ===================================================================
+%%  Section 1
+%% ===================================================================
+\section{Setting and notation}\label{sec:notation}
+
+Let $\mathcal{C}$ be the set of cells and $\mathcal{F}$ the set of oriented
+interior faces.  Cell~$i$ has volume~$|C_i|$, and $\mathcal{N}(i)$ is its
+neighbor set.  All pressure vectors lie in the mean-zero subspace so that the
+discrete pressure operator is invertible.
+
+For a saturation field~$S$, define the TPFA pressure operator by
+\begin{equation}
+  A(S)\,p = q,\qquad
+  \bigl(A(S)\,p\bigr)_i
+    := \sum_{j\in\mathcal{N}(i)} T_{ij}(S)\,(p_i - p_j),
+\end{equation}
+where $T_{ij}(S)>0$ is the face transmissibility.  The pressure solution is
+denoted by~$p(S)$.  The associated face flux is
+\begin{equation}
+  F_{ij}(S) := T_{ij}(S)\,\bigl(p_i(S) - p_j(S)\bigr),\qquad
+  F_{ji}(S) = -F_{ij}(S).
+\end{equation}
+
+For a frozen face-flux field~$F$, the explicit upwind transport update is
+\begin{equation}\label{eq:transport-update}
+  \bigl(\mathcal{T}^{F}_{\Delta t}(S)\bigr)_i
+    := S_i - \frac{\Delta t}{|C_i|}
+       \sum_{j\in\mathcal{N}(i)} \Phi_{ij}(S;F),\qquad
+  \Phi_{ij}(S;F) := F_{ij}\,f_w(S_{\mathrm{up}}),
+\end{equation}
+where $S_{\mathrm{up}} = S_i$ if $F_{ij}\ge 0$ and $S_{\mathrm{up}} = S_j$
+otherwise.  Assume $f_w:[0,1]\to[0,1]$ is Lipschitz and bounded; write
+\[
+  L_f := \sup_{s\in[0,1]}|f_w'(s)|,\qquad
+  \|f_w\|_\infty := \sup_{s\in[0,1]}|f_w(s)|.
+\]
+
+We use the norms
+\begin{align}
+  \|S\|_{\ell^1(\mathcal{C})}
+    &:= \sum_{i\in\mathcal{C}} |C_i|\,|S_i|,\\
+  \|G\|_{\ell^1(\mathcal{F})}
+    &:= \sum_{(i,j)\in\mathcal{F}} |G_{ij}|,\\
+  \|G\|^2_{\ell^2(\mathcal{F};\,T'^{-1})}
+    &:= \sum_{(i,j)\in\mathcal{F}} \frac{|G_{ij}|^2}{T'_{ij}},\\
+  \|p\|^2_{A(S)}
+    &:= p^T A(S)\,p
+     = \sum_{(i,j)\in\mathcal{F}} T_{ij}(S)\,(p_i - p_j)^2,\\
+  \|r\|^2_{A(S)^{-1}}
+    &:= r^T A(S)^{-1} r.
+\end{align}
+
+%% ===================================================================
+%%  Section 2
+%% ===================================================================
+\section{Convex viewpoint for the pressure problem}\label{sec:convex}
+
+\begin{proposition}[Strong convexity of the pressure functional]\label{prop:strong-convex}
+For fixed~$S$, define
+\[
+  J_S(p) := \tfrac{1}{2}\,p^T A(S)\,p - q^T p.
+\]
+Then $p(S)$ is the unique minimizer of~$J_S$ on the mean-zero subspace and
+\[
+  J_S(p) - J_S(p(S)) = \tfrac{1}{2}\,\|p - p(S)\|^2_{A(S)}.
+\]
+If $\lambda_{\min}(A(S))\ge\lambda>0$, then
+\[
+  J_S(p) - J_S(p(S)) \ge \tfrac{1}{2}\,\lambda\,\|p - p(S)\|^2_2.
+\]
+\end{proposition}
+
+\begin{remark}
+This convex formulation is not needed for the main splitting estimate, but it
+explains why the pressure subproblem is well posed and why auxiliary
+pressure-like solves naturally appear in the estimator.
+\end{remark}
+
+%% ===================================================================
+%%  Section 3
+%% ===================================================================
+\section{Pressure perturbation and flux perturbation}\label{sec:pressure-flux}
+
+Fix two saturation states $S$ and $S'$, and write
+\[
+  A := A(S),\quad A' := A(S'),\quad p := p(S),\quad p' := p(S').
+\]
+Also set
+\[
+  T_{ij} := T_{ij}(S),\quad T'_{ij} := T_{ij}(S'),\quad
+  \delta T_{ij} := T'_{ij} - T_{ij}.
+\]
+
+\begin{lemma}[Pressure perturbation inequality]\label{lem:pressure-pert}
+The pressure difference satisfies
+\[
+  A'(p'-p) = (A - A')p,\qquad
+  \|p'-p\|_{A'} \le \|(A'-A)p\|_{A'^{-1}}.
+\]
+\end{lemma}
+
+\begin{proof}
+Subtract $Ap = q$ and $A'p' = q$ to get $A'(p'-p) = (A-A')p$.  Testing with
+$p'-p$ and applying Cauchy--Schwarz in the $A'$ inner product gives
+\[
+  \|p'-p\|^2_{A'} \le \|p'-p\|_{A'}\,\|(A'-A)p\|_{A'^{-1}},
+\]
+which implies the claim.
+\end{proof}
+
+\begin{definition}[Baseline elliptic defect]\label{def:defect}
+The defect controlling the flux lag is
+\begin{equation}\label{eq:defect}
+  \mathsf{D}(S,S')^2
+    := 2\,\|(A'-A)p\|^2_{A'^{-1}}
+     + 2\sum_{(i,j)\in\mathcal{F}}
+         \frac{|\delta T_{ij}|^2}{T'_{ij}}\,(p_i - p_j)^2.
+\end{equation}
+\end{definition}
+
+\begin{proposition}[Flux perturbation bound]\label{prop:flux-pert}
+The flux difference satisfies
+\[
+  \|F(S') - F(S)\|_{\ell^2(\mathcal{F};\,T'^{-1})}
+    \le \mathsf{D}(S,S').
+\]
+\end{proposition}
+
+\begin{proof}
+For each face,
+\[
+  F_{ij}(S') - F_{ij}(S)
+    = T'_{ij}\bigl((p'_i - p'_j) - (p_i - p_j)\bigr)
+    + \delta T_{ij}(p_i - p_j).
+\]
+Squaring, dividing by $T'_{ij}$, and using $(a+b)^2\le 2a^2+2b^2$ gives
+\[
+  \frac{|F_{ij}(S')-F_{ij}(S)|^2}{T'_{ij}}
+    \le 2\,T'_{ij}\,|(p'_i-p'_j)-(p_i-p_j)|^2
+     + 2\,\frac{|\delta T_{ij}|^2}{T'_{ij}}\,(p_i-p_j)^2.
+\]
+Summing over faces yields
+\[
+  \|F(S')-F(S)\|^2_{\ell^2(\mathcal{F};\,T'^{-1})}
+    \le 2\,\|p'-p\|^2_{A'}
+     + 2\sum_{(i,j)\in\mathcal{F}}
+         \frac{|\delta T_{ij}|^2}{T'_{ij}}\,(p_i-p_j)^2.
+\]
+Now insert Lemma~\ref{lem:pressure-pert}.
+\end{proof}
+
+\begin{definition}[Face norm-conversion constant]\label{def:cell}
+Define
+\begin{equation}\label{eq:cell}
+  C_{\mathrm{ell}}(S')
+    := \biggl(\sum_{(i,j)\in\mathcal{F}} T'_{ij}\biggr)^{1/2}.
+\end{equation}
+Then for any face field~$G$,
+\begin{equation}\label{eq:norm-convert}
+  \|G\|_{\ell^1(\mathcal{F})}
+    \le C_{\mathrm{ell}}(S')\,\|G\|_{\ell^2(\mathcal{F};\,T'^{-1})}.
+\end{equation}
+\end{definition}
+
+%% ===================================================================
+%%  Section 4
+%% ===================================================================
+\section{Transport contraction and transport sensitivity to flux}
+\label{sec:transport}
+
+\begin{assumption}[CFL condition]\label{ass:cfl}
+The explicit transport step satisfies
+\begin{equation}\label{eq:cfl}
+  \frac{\Delta t}{|C_i|}\sum_{j\in\mathcal{N}(i)} |F_{ij}|\,L_f \le 1
+  \qquad\text{for every } i\in\mathcal{C}.
+\end{equation}
+\end{assumption}
+
+\begin{lemma}[Crandall--Tartar]\label{lem:CT}
+Let $T:\mathbb{R}^{|\mathcal{C}|}\to\mathbb{R}^{|\mathcal{C}|}$ be order
+preserving and conservative:
+\[
+  U\le V \text{ componentwise}
+  \;\Longrightarrow\; T(U)\le T(V),\qquad
+  \sum_i |C_i|\,T(U)_i = \sum_i |C_i|\,U_i.
+\]
+Then
+\[
+  \|T(U)-T(V)\|_{\ell^1(\mathcal{C})}
+    \le \|U-V\|_{\ell^1(\mathcal{C})}.
+\]
+\end{lemma}
+
+\begin{remark}
+The proof is the usual max/min squeeze: set $M=\max(U,V)$ and
+$m=\min(U,V)$, use monotonicity to obtain
+$|T(U)_i - T(V)_i|\le T(M)_i - T(m)_i$, and then use conservation to
+collapse the sum.
+\end{remark}
+
+\begin{proposition}[IMPES $\ell^1$ contraction]\label{prop:contraction}
+Under the CFL condition~\eqref{eq:cfl}, the upwind transport map
+$\mathcal{T}^F_{\Delta t}$ is conservative and order preserving.  Hence
+\[
+  \|\mathcal{T}^F_{\Delta t}(U)
+    - \mathcal{T}^F_{\Delta t}(V)\|_{\ell^1(\mathcal{C})}
+    \le \|U - V\|_{\ell^1(\mathcal{C})}.
+\]
+\end{proposition}
+
+\begin{proposition}[Sensitivity of transport to the flux field]
+\label{prop:flux-sensitivity}
+For fixed~$S^n$ and two face-flux fields $F$ and $\widetilde{F}$,
+\begin{equation}\label{eq:flux-sensitivity}
+  \bigl\|\mathcal{T}^{F}_{\Delta t}(S^n)
+    - \mathcal{T}^{\widetilde{F}}_{\Delta t}(S^n)
+  \bigr\|_{\ell^1(\mathcal{C})}
+    \le \Delta t\,L_F\,\|F - \widetilde{F}\|_{\ell^1(\mathcal{F})},
+  \qquad L_F := 2\,\|f_w\|_\infty.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For fixed~$S^n$, each numerical flux $\Phi_{ij}(S^n;\,\cdot)$ is piecewise
+linear in the scalar argument~$F_{ij}$ and Lipschitz with constant at
+most~$\|f_w\|_\infty$.  Summing the cellwise differences
+from~\eqref{eq:transport-update}, and noting that each interior face appears
+in at most two cell balances, gives~\eqref{eq:flux-sensitivity}.
+\end{proof}
+
+%% ===================================================================
+%%  Section 5
+%% ===================================================================
+\section{One-step splitting estimate}\label{sec:one-step}
+
+Define the sequential update by
+\[
+  S^{n+1}_{\mathrm{seq}}
+    := \mathcal{T}^{F(S^n)}_{\Delta t}(S^n),
+\]
+and let the fully implicit state $S^{n+1}_{\mathrm{FI}}$ satisfy the coupled
+fixed-point relation up to tolerance $\mathrm{tol}_{\mathrm{FI}}$:
+\begin{equation}\label{eq:FI-tol}
+  \bigl\|\mathcal{T}^{F(S^{n+1}_{\mathrm{FI}})}_{\Delta t}(S^n)
+    - S^{n+1}_{\mathrm{FI}}\bigr\|_{\ell^1(\mathcal{C})}
+    \le \mathrm{tol}_{\mathrm{FI}}.
+\end{equation}
+
+\begin{theorem}[One-step sequential versus FI bound]\label{thm:one-step}
+Let $S' := S^{n+1}_{\mathrm{FI}}$.  Then
+\begin{equation}\label{eq:one-step}
+  \|S^{n+1}_{\mathrm{seq}} - S^{n+1}_{\mathrm{FI}}\|_{\ell^1(\mathcal{C})}
+    \le \Delta t\,L_F\,C_{\mathrm{ell}}(S')\,\mathsf{D}(S^n,S')
+      + \mathrm{tol}_{\mathrm{FI}}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Introduce the intermediate state
+\[
+  \widehat{S} := \mathcal{T}^{F(S')}_{\Delta t}(S^n).
+\]
+By the triangle inequality,
+\[
+  \|S^{n+1}_{\mathrm{seq}} - S^{n+1}_{\mathrm{FI}}\|_{\ell^1(\mathcal{C})}
+    \le \|S^{n+1}_{\mathrm{seq}} - \widehat{S}\|_{\ell^1(\mathcal{C})}
+     +  \|\widehat{S} - S^{n+1}_{\mathrm{FI}}\|_{\ell^1(\mathcal{C})}.
+\]
+The second term is at most $\mathrm{tol}_{\mathrm{FI}}$
+by~\eqref{eq:FI-tol}.  For the first term, apply
+Proposition~\ref{prop:flux-sensitivity}:
+\[
+  \|S^{n+1}_{\mathrm{seq}} - \widehat{S}\|_{\ell^1(\mathcal{C})}
+    \le \Delta t\,L_F\,\|F(S^n) - F(S')\|_{\ell^1(\mathcal{F})}.
+\]
+Use the norm conversion~\eqref{eq:norm-convert}, then
+Proposition~\ref{prop:flux-pert}, to get
+\[
+  \|F(S^n) - F(S')\|_{\ell^1(\mathcal{F})}
+    \le C_{\mathrm{ell}}(S')\,\mathsf{D}(S^n,S').
+\]
+Combining the two pieces yields~\eqref{eq:one-step}.
+\end{proof}
+
+\begin{remark}
+In the baseline estimate, the direct transmissibility-change term
+in~\eqref{eq:defect} is part of the defect and should remain.  It can only be
+removed if one replaces the baseline estimate by the sharper
+complementary-energy route below.
+\end{remark}
+
+%% ===================================================================
+%%  Section 6
+%% ===================================================================
+\section{Global accumulation and outer iteration}\label{sec:global}
+
+\begin{corollary}[Global accumulation without Gr\"onwall]\label{cor:global}
+Let
+\[
+  E_n := \|S^n_{\mathrm{seq}} - S^n_{\mathrm{FI}}\|_{\ell^1(\mathcal{C})},
+  \qquad
+  \mathsf{D}_n := \mathsf{D}\bigl(S^n_{\mathrm{seq}},\,S^{n+1}_{\mathrm{FI}}\bigr).
+\]
+Then
+\[
+  E_{n+1} \le E_n
+    + \Delta t\,L_F\,C_{\mathrm{ell}}(S^{n+1}_{\mathrm{FI}})\,\mathsf{D}_n
+    + \mathrm{tol}_{\mathrm{FI},n}.
+\]
+Hence, by summation in time,
+\begin{equation}\label{eq:global}
+  E_N \le E_0
+    + \sum_{n=0}^{N-1} \Delta t\,L_F\,
+        C_{\mathrm{ell}}(S^{n+1}_{\mathrm{FI}})\,\mathsf{D}_n
+    + \sum_{n=0}^{N-1} \mathrm{tol}_{\mathrm{FI},n}.
+\end{equation}
+No discrete Gr\"onwall factor appears because the transport map is
+$\ell^1$-contractive.
+\end{corollary}
+
+\begin{proposition}[Outer-iteration stopping criterion]\label{prop:outer}
+Suppose the SFI outer iteration
+\[
+  S^{n+1,(k+1)}
+    := \mathcal{T}^{F(S^{n+1,(k)})}_{\Delta t}(S^n)
+\]
+is contractive with rate $\rho<1$ in $\ell^1(\mathcal{C})$.  Then the distance
+to its fixed point~$S^{n+1,*}$ satisfies
+\[
+  \|S^{n+1,(k)} - S^{n+1,*}\|_{\ell^1(\mathcal{C})}
+    \le \frac{\rho}{1-\rho}\,
+        \|S^{n+1,(k)} - S^{n+1,(k-1)}\|_{\ell^1(\mathcal{C})}.
+\]
+Thus the outer-iterate increment gives a practical stopping rule.
+\end{proposition}
+
+%% ===================================================================
+%%  Section 7
+%% ===================================================================
+\section{Sharper estimators: complementary energy and face-local transport}
+\label{sec:sharp}
+
+The baseline estimate loses sharpness in two places: (i)~Young's inequality in
+the flux decomposition and (ii)~the global norm conversion from
+$\ell^2(\mathcal{F};\,T'^{-1})$ to $\ell^1(\mathcal{F})$.  These losses can
+be reduced by working directly in flux space.
+
+\begin{definition}[Complementary energy]\label{def:comp-energy}
+For fixed~$S'$, define the resistance functional
+\[
+  \mathcal{J}^*_{S'}(G)
+    := \frac{1}{2}\sum_{(i,j)\in\mathcal{F}}
+         \frac{G_{ij}^2}{T'_{ij}}
+\]
+on the affine space of face fields satisfying $\operatorname{div} G = q$.  The
+true flux $F(S')$ minimizes $\mathcal{J}^*_{S'}$ on this space.
+\end{definition}
+
+\begin{theorem}[Exact complementary-energy identity (EST4)]
+\label{thm:comp-energy}
+Let $F := F(S)$ and $F' := F(S')$, and assume
+$\operatorname{div} F = \operatorname{div} F' = q$.  Then
+\begin{equation}\label{eq:comp-energy}
+  \tfrac{1}{2}\,\|F' - F\|^2_{\ell^2(\mathcal{F};\,T'^{-1})}
+    = \mathcal{J}^*_{S'}(F) - \mathcal{J}^*_{S'}(F').
+\end{equation}
+Moreover,
+\[
+  \mathcal{J}^*_{S'}(F)
+    = \frac{1}{2}\sum_{(i,j)\in\mathcal{F}}
+        \frac{T_{ij}(S)^2}{T_{ij}(S')}\,
+        \bigl(p_i(S) - p_j(S)\bigr)^2,
+\]
+which is computable from the old pressure and the new transmissibilities.
+\end{theorem}
+
+\begin{proof}
+Since $F'$ minimizes $\mathcal{J}^*_{S'}$ under the constraint
+$\operatorname{div} G = q$, the gradient of $\mathcal{J}^*_{S'}$ at~$F'$ is
+a pressure gradient.  Its pairing with the divergence-free perturbation
+$F - F'$ vanishes by discrete summation by parts.  Because
+$\mathcal{J}^*_{S'}$ is quadratic, the resulting Bregman divergence is
+exactly
+$\tfrac{1}{2}\,\|F'-F\|^2_{\ell^2(\mathcal{F};\,T'^{-1})}$.
+\end{proof}
+
+\begin{corollary}[A priori complementary-energy upper bound]
+\label{cor:apriori}
+Before solving the new pressure problem one still has
+\[
+  \tfrac{1}{2}\,\|F' - F\|^2_{\ell^2(\mathcal{F};\,T'^{-1})}
+    \le \mathcal{J}^*_{S'}(F),
+\]
+since the minimizer value $\mathcal{J}^*_{S'}(F')$ is nonnegative.
+\end{corollary}
+
+\begin{proposition}[Face-local transport estimate (EST5)]
+\label{prop:face-local}
+Let $\delta F_{ij} := F_{ij}(S^n) - F_{ij}(S')$ and let $S^n_{\mathrm{up},ij}$
+denote the upwind saturation at face~$(i,j)$ for the transport step
+from~$S^n$.  Then
+\begin{equation}\label{eq:face-local}
+  \bigl\|\mathcal{T}^{F(S^n)}_{\Delta t}(S^n)
+    - \mathcal{T}^{F(S')}_{\Delta t}(S^n)
+  \bigr\|_{\ell^1(\mathcal{C})}
+    \le 2\,\Delta t
+        \sum_{(i,j)\in\mathcal{F}}
+          |f_w(S^n_{\mathrm{up},ij})|\,|\delta F_{ij}|.
+\end{equation}
+\end{proposition}
+
+\begin{theorem}[Sharper splitting bound]\label{thm:sharp}
+Under the hypotheses of Theorem~\ref{thm:one-step},
+\begin{equation}\label{eq:sharp}
+  \|S^{n+1}_{\mathrm{seq}} - S^{n+1}_{\mathrm{FI}}\|_{\ell^1(\mathcal{C})}
+    \le 2\,\Delta t
+        \sum_{(i,j)\in\mathcal{F}}
+          |f_w(S^n_{\mathrm{up},ij})|\,
+          |F_{ij}(S^n) - F_{ij}(S^{n+1}_{\mathrm{FI}})|
+      + \mathrm{tol}_{\mathrm{FI}}.
+\end{equation}
+The facewise flux error can then be controlled in three ways:
+\begin{enumerate}
+\item exact a posteriori via the identity~\eqref{eq:comp-energy};
+\item a priori via the upper bound $\mathcal{J}^*_{S'}(F)$;
+\item very cheaply by keeping only the transmissibility-change part of the
+      face-flux decomposition.
+\end{enumerate}
+\end{theorem}
+
+%% ===================================================================
+%%  Section 8
+%% ===================================================================
+\section{Proof logic at a glance}\label{sec:logic}
+
+The full argument can be remembered as the following six-step chain:
+\begin{enumerate}
+\item Solve the old pressure problem and compute the old flux $F(S^n)$.
+\item Compare old and new pressures through the defect equation
+      $A'(p'-p) = (A - A')p$.
+\item Convert pressure error into weighted flux error using the face-flux
+      decomposition.
+\item Convert weighted flux error into transport error using flux-Lipschitz
+      continuity of the upwind step.
+\item Introduce the intermediate state
+      $\widehat{S} = \mathcal{T}^{F(S^{n+1}_{\mathrm{FI}})}_{\Delta t}(S^n)$
+      and split the error into flux lag plus FI residual.
+\item Accumulate in time using Crandall--Tartar contraction, which prevents
+      past transport errors from amplifying.
+\end{enumerate}
+
+\end{document}
