@@ -25,7 +25,69 @@ estimators.
 \end{abstract}
 
 %% ===================================================================
-%%  Section 1
+%%  NEW SECTION: Governing Equations of Two-Phase Flow
+%% ===================================================================
+\section{Governing equations of two-phase flow}\label{sec:governing}
+
+We consider immiscible, incompressible two-phase flow (wetting phase~$w$ and
+non-wetting phase~$o$) in a porous medium with absolute permeability
+tensor~$K$ and porosity~$\phi$.
+
+\paragraph{Darcy's law.}
+The volumetric velocity of each phase $\alpha\in\{w,o\}$ is given by
+\begin{equation}\label{eq:darcy}
+  \mathbf{u}_\alpha
+    = -\frac{k_{r\alpha}(S)}{\mu_\alpha}\,K\,\nabla p_\alpha\,,
+\end{equation}
+where $S$ denotes the wetting-phase saturation, $k_{r\alpha}(S)$ is the
+relative permeability of phase~$\alpha$, $\mu_\alpha$ is the phase
+viscosity, and $p_\alpha$ is the phase pressure.  Neglecting capillary
+pressure ($p_w = p_o =: p$), the total velocity is
+\begin{equation}\label{eq:utot}
+  \mathbf{u}_t
+    := \mathbf{u}_w + \mathbf{u}_o
+    = -\lambda_t(S)\,K\,\nabla p\,,
+\end{equation}
+with the total mobility
+\begin{equation}\label{eq:total-mobility}
+  \lambda_t(S)
+    := \frac{k_{rw}(S)}{\mu_w} + \frac{k_{ro}(S)}{\mu_o}\,.
+\end{equation}
+
+\paragraph{Pressure equation.}
+Summing the phase mass-conservation laws and using
+incompressibility gives the elliptic pressure equation
+\begin{equation}\label{eq:pressure}
+  -\nabla\cdot\bigl(\lambda_t(S)\,K\,\nabla p\bigr) = q_t\,,
+\end{equation}
+where $q_t = q_w + q_o$ is the total source/sink term.
+
+\paragraph{Saturation (transport) equation.}
+Substituting Darcy's law into the wetting-phase conservation equation
+yields the hyperbolic/parabolic transport equation
+\begin{equation}\label{eq:saturation}
+  \phi\,\frac{\partial S}{\partial t}
+    + \nabla\cdot\bigl(f_w(S)\,\mathbf{u}_t\bigr)
+    = q_w\,,
+\end{equation}
+where the \emph{fractional-flow function} is
+\begin{equation}\label{eq:fw}
+  f_w(S)
+    := \frac{\lambda_w(S)}{\lambda_t(S)}
+    = \frac{k_{rw}(S)/\mu_w}{k_{rw}(S)/\mu_w + k_{ro}(S)/\mu_o}\,.
+\end{equation}
+
+\paragraph{Sequential splitting.}
+In the IMPES (IMplicit Pressure, Explicit Saturation) approach one
+first solves the pressure equation~\eqref{eq:pressure} for~$p$ with
+the current saturation frozen, computes the face fluxes, and then
+advances the saturation equation~\eqref{eq:saturation} explicitly with
+those frozen fluxes.  The remainder of this note quantifies the error
+introduced by this sequential decoupling relative to the fully implicit
+(coupled) solution.
+
+%% ===================================================================
+%%  Original Section 1 (renumbered automatically)
 %% ===================================================================
 \section{Setting and notation}\label{sec:notation}
 
